@@ -18,6 +18,8 @@ export interface IVoterStats {
   totalCenters: number;
   upazilas: string[];
   turnout: number;
+  validVotes: number;
+  invalidVotes: number;
 }
 
 export interface IElection extends Document {
@@ -49,7 +51,9 @@ const VoterStatsSchema = new Schema<IVoterStats>({
   femaleVoters: { type: Number, required: true },
   totalCenters: { type: Number, required: true },
   upazilas: [{ type: String }],
-  turnout: { type: Number, required: true }
+  turnout: { type: Number, required: true },
+  validVotes: { type: Number, required: true },
+  invalidVotes: { type: Number, required: true }
 });
 
 const ElectionSchema = new Schema<IElection>({

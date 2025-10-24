@@ -6,9 +6,10 @@ import { IConstituency } from '@/models/Constituency';
 import Timeline from '@/components/Timeline';
 import ElectionDetails from '@/components/ElectionDetails';
 import ConstituencyList from '@/components/ConstituencyList';
-import ConstituencyDetails from '@/components/ConstituencyDetails';
+
 import ParliamentTabs from '@/components/ParliamentTabs';
 import Header from '@/components/Header';
+import Link from 'next/link';
 
 export default function Home() {
   const [elections, setElections] = useState<IElection[]>([]);
@@ -121,6 +122,18 @@ export default function Home() {
               >
                 Party & Manifesto
               </button>
+              <Link
+                href="/parliament-visualization"
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold inline-block"
+              >
+                Parliament Visualization
+              </Link>
+              <Link
+                href="/parliament-seating"
+                className="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-semibold inline-block"
+              >
+                Parliament Seating Chart
+              </Link>
             </div>
           </div>
         )}
@@ -145,9 +158,7 @@ export default function Home() {
               selectedConstituency={selectedConstituency}
             />
             
-            {selectedConstituency && (
-              <ConstituencyDetails constituency={selectedConstituency} />
-            )}
+            
           </div>
         )}
         

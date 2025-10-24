@@ -22,6 +22,8 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
   };
 
   const totalVotes = election.candidates.reduce((sum, candidate) => sum + candidate.votes, 0);
+  const validVotes = election.voterStats.validVotes;
+  const invalidVotes = election.voterStats.invalidVotes;
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
@@ -54,7 +56,7 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {election.candidates.map((candidate, index) => {
-              const percentage = ((candidate.votes / totalVotes) * 100).toFixed(2);
+              const percentage = ((candidate.votes / validVotes) * 100).toFixed(2);
               
               return (
                 <div
@@ -67,7 +69,7 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
                       : 'border-gray-200 bg-gray-50'
                   }`}
                 >
-                  <div className="text-center">
+                  <div className="text-center text-black">
                     {candidate.imageUrl && (
                       <div className="mb-4">
                         <Image
@@ -84,9 +86,7 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
                       {candidate.name}
                     </h3>
                     
-                    <p className="text-lg font-bold text-gray-800 mb-4">
-                      {candidate.name}
-                    </p>
+                    
                     
                     <div className="space-y-2 text-sm mb-4">
                       <p>
@@ -127,7 +127,7 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
             Voter Statistics
           </h2>
           
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-3 gap-6 mb-6">
             <div className="text-center">
               <div className="text-3xl font-bold text-blue-600 mb-2">
                 {formatNumber(election.voterStats.totalVoters)}
@@ -136,17 +136,24 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
             </div>
             
             <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-2">
+                {formatNumber(validVotes)}
+              </div>
+              <div className="text-sm text-gray-600">Valid Votes</div>
+            </div>
+            
+            <div className="text-center">
               <div className="text-3xl font-bold text-green-600 mb-2">
-                {election.voterStats.turnout}%
+                {(((validVotes + invalidVotes) / election.voterStats.totalVoters) * 100).toFixed(2)}%
               </div>
               <div className="text-sm text-gray-600">Turnout</div>
             </div>
           </div>
           
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            {/* <p className="text-sm text-gray-600">
               <strong>Upazilas/Unions/Wards:</strong> All Districts
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

@@ -161,7 +161,7 @@ export default function ConstituencyList({
               {/* Expanded Content */}
               {isExpanded && (
                 <div className="bg-white p-4 border-t border-gray-200">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className={`grid gap-4 grid-cols-1 ${constituency.candidates.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
                     {constituency.candidates.map((candidate, index) => (
                       <div
                         key={index}
@@ -186,7 +186,7 @@ export default function ConstituencyList({
                             </div>
                           )}
                           
-                          <h3 className="font-bold text-sm mb-1">{candidate.name}</h3>
+                          <h3 className="font-bold text-sm text-black mb-1">{candidate.name}</h3>
                           
                           <p className="text-xs text-gray-600 mb-1">
                             {candidate.party}
@@ -196,18 +196,18 @@ export default function ConstituencyList({
                             Symbol: {candidate.symbol}
                           </p>
                           
-                          <div className="bg-white rounded p-2">
+                          <div className="bg-white text-black rounded p-2">
                             <p className="text-xs font-semibold mb-1">Result:</p>
                             <p className="text-xs text-gray-600 mb-1">
                               Vote: <span className="font-bold text-blue-600">
                                 {candidate.votes.toLocaleString()}
                               </span>
                             </p>
-                            <p className="text-xs text-gray-600 mb-1">
+                            {/* <p className="text-xs text-gray-600 mb-1">
                               Center Counted: <span className="font-bold text-blue-600">
                                 {candidate.centersCounted}
                               </span>
-                            </p>
+                            </p> */}
                             
                             {candidate.isWinner && (
                               <p className="text-red-600 font-bold text-xs">WINNER</p>
@@ -223,7 +223,7 @@ export default function ConstituencyList({
                   
                   {/* Voter Statistics */}
                   <div className="mt-4 bg-blue-50 p-4 rounded-lg">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                       <div className="text-center">
                         <div className="w-8 h-8 bg-blue-200 rounded-full flex items-center justify-center mx-auto mb-1">
                           <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,13 +271,13 @@ export default function ConstituencyList({
                         </p>
                         <p className="text-xs text-gray-600">Total Centres</p>
                       </div>
-                    </div>
+                    </div> */}
                     
                     {/* District and Upazila info */}
                     <div className="text-center">
-                      <p className="text-xs text-gray-600">
+                      {/* <p className="text-xs text-gray-600">
                         <strong>Upazilas/Unions/Wards:</strong> {constituency.voterStats.upazilas.join(', ')}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                 </div>
