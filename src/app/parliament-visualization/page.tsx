@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import ParliamentVisualization from '@/components/ParliamentVisualization';
+
 
 export default function ParliamentVisualizationPage() {
   const [electionYear, setElectionYear] = useState('1991');
@@ -39,7 +39,7 @@ export default function ParliamentVisualizationPage() {
           </div>
         </div>
 
-        <ParliamentVisualization electionYear={electionYear} />
+        
       </div>
     </div>
   );

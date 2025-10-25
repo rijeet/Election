@@ -4,9 +4,6 @@ import React, { useState, useEffect } from 'react';
 
 interface ConstituencyData {
   party: string;
-  color: string;
-  candidate: string;
-  isWinner: boolean;
 }
 
 interface PartyInfo {
@@ -18,7 +15,6 @@ interface PartyInfo {
 interface ParliamentData {
   electionYear: string;
   constituencies: Record<number, ConstituencyData>;
-  parties: PartyInfo[];
   totalSeats: number;
 }
 
@@ -330,11 +326,18 @@ const PARLIAMENT_CIRCLES = [
   { cx: 349.77, cy: 174.85, r: 4.12, constituency: 300 }
 ];
 
+// Fixed color array for 20 different parties
+const PARTY_COLORS = [
+  '#00A228', '#FDD60F', '#E50305', '#2C61E3', '#743699',
+  '#FF6B35', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+  '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+  '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
+];
+
 export default function ParliamentSeatingChart({ electionYear }: ParliamentSeatingChartProps) {
   const [parliamentData, setParliamentData] = useState<ParliamentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hoveredSeat, setHoveredSeat] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchParliamentData = async () => {
@@ -360,17 +363,27 @@ export default function ParliamentSeatingChart({ electionYear }: ParliamentSeati
     fetchParliamentData();
   }, [electionYear]);
 
-  const getSeatColor = (constituencyNumber: number): string => {
-    if (!parliamentData) return '#f0f0f0';
+  // Count parties by name and assign colors
+  const getPartyCounts = () => {
+    if (!parliamentData) return {};
     
-    const constituencyData = parliamentData.constituencies[constituencyNumber];
-    return constituencyData?.color || '#f0f0f0';
+    const partyCounts: Record<string, number> = {};
+    Object.values(parliamentData.constituencies).forEach(constituency => {
+      if (constituency.party) {
+        partyCounts[constituency.party] = (partyCounts[constituency.party] || 0) + 1;
+      }
+    });
+    
+    return partyCounts;
   };
 
-  const getSeatInfo = (constituencyNumber: number) => {
-    if (!parliamentData) return null;
+  // Get color for a party based on its index
+  const getPartyColor = (partyName: string): string => {
+    const partyCounts = getPartyCounts();
+    const sortedParties = Object.keys(partyCounts).sort((a, b) => partyCounts[b] - partyCounts[a]);
+    const partyIndex = sortedParties.indexOf(partyName);
     
-    return parliamentData.constituencies[constituencyNumber] || null;
+    return partyIndex >= 0 ? PARTY_COLORS[partyIndex % PARTY_COLORS.length] : '#f0f0f0';
   };
 
   // Group seats by party for better visual organization
@@ -384,13 +397,14 @@ export default function ParliamentSeatingChart({ electionYear }: ParliamentSeati
       const seatInfo = parliamentData.constituencies[circle.constituency];
       if (seatInfo) {
         const party = seatInfo.party;
+        const color = getPartyColor(party);
         if (!partySeats[party]) {
           partySeats[party] = [];
         }
         partySeats[party].push({
           ...circle,
           party: seatInfo.party,
-          color: seatInfo.color
+          color: color
         });
       }
     });
@@ -461,15 +475,17 @@ export default function ParliamentSeatingChart({ electionYear }: ParliamentSeati
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-3">Party Results</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {parliamentData.parties.map((party, index) => (
+          {Object.entries(getPartyCounts())
+            .sort(([,a], [,b]) => b - a)
+            .map(([partyName, seatCount], index) => (
             <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
               <div 
                 className="w-4 h-4 rounded"
-                style={{ backgroundColor: party.color }}
+                style={{ backgroundColor: getPartyColor(partyName) }}
               ></div>
               <div className="text-sm">
-                <div className="font-medium">{party.name}</div>
-                <div className="text-gray-600">{party.seats} seats</div>
+                <div className="font-medium">{partyName}</div>
+                <div className="text-gray-600">{seatCount} seats</div>
               </div>
             </div>
           ))}
@@ -500,18 +516,13 @@ export default function ParliamentSeatingChart({ electionYear }: ParliamentSeati
           
           {/* Parliament circles in grouped arrangement by party */}
           {getGroupedSeats().map((seat, index) => {
-            const isHovered = hoveredSeat === seat.constituency;
-            
             return (
               <g key={index}>
                 <circle
                   cx={seat.cx}
                   cy={seat.cy}
                   r={seat.r}
-                  fill={seat.color}
-                 
-                 
-                 
+                  
                 />
               </g>
             );
