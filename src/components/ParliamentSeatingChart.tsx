@@ -388,7 +388,11 @@ export default function ParliamentSeatingChart({ electionYear }: ParliamentSeati
 
   // Group seats by party for better visual organization
   const getGroupedSeats = () => {
-    if (!parliamentData) return PARLIAMENT_CIRCLES;
+    if (!parliamentData) return PARLIAMENT_CIRCLES.map(circle => ({
+      ...circle,
+      party: '',
+      color: '#f0f0f0'
+    }));
     
     // Create a mapping of party to seats
     const partySeats: Record<string, Array<{cx: number, cy: number, r: number, constituency: number, party: string, color: string}>> = {};
@@ -522,7 +526,9 @@ export default function ParliamentSeatingChart({ electionYear }: ParliamentSeati
                   cx={seat.cx}
                   cy={seat.cy}
                   r={seat.r}
-                  
+                  fill={seat.color}
+                  stroke="#333"
+                  strokeWidth="0.5"
                 />
               </g>
             );

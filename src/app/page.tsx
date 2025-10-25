@@ -8,6 +8,7 @@ import ElectionDetails from '@/components/ElectionDetails';
 import ConstituencyList from '@/components/ConstituencyList';
 
 import ParliamentTabs from '@/components/ParliamentTabs';
+import ParliamentSeatingChart from '@/components/ParliamentSeatingChart';
 import Header from '@/components/Header';
 import Link from 'next/link';
 
@@ -19,7 +20,6 @@ export default function Home() {
   const [showParliamentTabs, setShowParliamentTabs] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     fetchElections();
   }, []);
@@ -106,7 +106,7 @@ export default function Home() {
         />
         
         {selectedElection && !showConstituencies && !showParliamentTabs && (
-          <div>
+          <div className="max-w-6xl mx-auto px-6">
             <ElectionDetails election={selectedElection} />
             
             <div className="text-center mt-8 space-x-4">
@@ -128,12 +128,23 @@ export default function Home() {
               >
                 Parliament Visualization
               </Link>
-              <Link
-                href="/parliament-seating"
-                className="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-semibold inline-block"
-              >
-                Parliament Seating Chart
-              </Link>
+            </div>
+
+            {/* Parliament Seating Chart - Integrated with Election Details */}
+            <div className="mt-12">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                  Parliament Seating Chart
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Interactive parliament seating chart showing constituency results by election year. Each circle represents a parliamentary seat colored by the winning party.
+                </p>
+                <p className="text-sm text-gray-500 mb-6">
+                  Use the timeline navigation above to change election years (1973-2024)
+                </p>
+              </div>
+
+              <ParliamentSeatingChart electionYear={new Date(selectedElection.electionDate).getFullYear().toString()} />
             </div>
           </div>
         )}
