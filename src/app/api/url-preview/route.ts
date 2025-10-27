@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getLinkPreview } from 'link-preview-js';
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,8 +14,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Validate URL
+    let validUrl: URL;
     try {
-      new URL(url);
+      validUrl = new URL(url);
     } catch {
       return NextResponse.json(
         { error: 'Invalid URL format' },
@@ -22,10 +24,76 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // For demo purposes, return mock data based on URL patterns
-    const mockPreviewData = getMockPreviewData(url);
-    
-    return NextResponse.json(mockPreviewData);
+    // Ensure URL uses http or https protocol
+    if (!['http:', 'https:'].includes(validUrl.protocol)) {
+      return NextResponse.json(
+        { error: 'URL must use HTTP or HTTPS protocol' },
+        { status: 400 }
+      );
+    }
+
+    try {
+      // Extract metadata from the URL
+      const previewData = await getLinkPreview(url, {
+        timeout: 10000, // 10 second timeout
+        followRedirects: 'follow',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
+
+      // Define interface for preview data
+      interface PreviewData {
+        title?: string;
+        description?: string;
+        images?: string[];
+        siteName?: string;
+      }
+      
+      // Check if previewData has the expected structure
+      const hasValidData = previewData && typeof previewData === 'object' && 'title' in previewData;
+      
+      if (hasValidData) {
+        const data = previewData as PreviewData;
+        // Format the response data with proper type checking
+        const formattedData = {
+          title: data.title || 'No title available',
+          description: data.description || 'No description available',
+          image: data.images && Array.isArray(data.images) && data.images.length > 0 
+            ? data.images[0] 
+            : null,
+          siteName: data.siteName || validUrl.hostname,
+          url: url,
+          domain: validUrl.hostname
+        };
+
+        return NextResponse.json(formattedData);
+      } else {
+        // Fallback if data structure is unexpected
+        return NextResponse.json({
+          title: 'Link Preview',
+          description: 'Unable to extract metadata from this URL',
+          image: null,
+          siteName: validUrl.hostname,
+          url: url,
+          domain: validUrl.hostname,
+          error: 'Unexpected response format'
+        });
+      }
+    } catch (previewError) {
+      console.error('Error extracting URL metadata:', previewError);
+      
+      // Fallback response if metadata extraction fails
+      return NextResponse.json({
+        title: 'Link Preview',
+        description: 'Unable to load preview for this URL',
+        image: null,
+        siteName: validUrl.hostname,
+        url: url,
+        domain: validUrl.hostname,
+        error: 'Failed to extract metadata'
+      });
+    }
   } catch (error) {
     console.error('Error fetching URL preview:', error);
     return NextResponse.json(
@@ -33,44 +101,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-function getMockPreviewData(url: string) {
-  // Prothom Alo patterns
-  if (url.includes('prothomalo.com')) {
-    return {
-      title: 'নির্বাচন সংলাপ: রাজনৈতিক বিশ্লেষণ ও আলোচনা',
-      description: 'প্রথম আলোতে প্রকাশিত নির্বাচন সংক্রান্ত বিশেষ প্রতিবেদন। রাজনৈতিক বিশ্লেষকদের সাথে নির্বাচন নিয়ে বিস্তারিত আলোচনা।',
-      image: '/prothom-alo-preview.jpg',
-      siteName: 'প্রথম আলো'
-    };
-  }
-
-  // Daily Star patterns
-  if (url.includes('thedailystar.net')) {
-    return {
-      title: 'Election Analysis: Political Commentary',
-      description: 'Comprehensive analysis of election trends and political developments in Bangladesh.',
-      image: '/daily-star-preview.jpg',
-      siteName: 'The Daily Star'
-    };
-  }
-
-  // BBC Bangla patterns
-  if (url.includes('bbc.com/bengali')) {
-    return {
-      title: 'নির্বাচন: বিশেষ প্রতিবেদন',
-      description: 'বিবিসি বাংলায় প্রকাশিত নির্বাচন সংক্রান্ত বিশেষ প্রতিবেদন ও বিশ্লেষণ।',
-      image: '/bbc-bangla-preview.jpg',
-      siteName: 'বিবিসি বাংলা'
-    };
-  }
-
-  // Default news preview
-  return {
-    title: 'নির্বাচন সংক্রান্ত সংবাদ',
-    description: 'নির্বাচন ও রাজনীতি নিয়ে গুরুত্বপূর্ণ সংবাদ ও বিশ্লেষণ।',
-    image: '/news-preview.jpg',
-    siteName: 'সংবাদ মাধ্যম'
-  };
 }

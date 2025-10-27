@@ -51,70 +51,97 @@ export default function Timeline({ elections, onElectionSelect, selectedElection
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto my-8">
+    <div className="w-full max-w-6xl mx-auto my-12 px-6">
       <div className="relative">
-        {/* Timeline line */}
-        <div className="absolute top-12 left-10 right-10 h-0.5 bg-gray-300"></div>
-        <div 
-          className="absolute top-12 left-10 h-0.5 bg-green-600 transition-all duration-500"
-          style={{ width: `${(currentIndex / (elections.length - 1)) * 100}%` }}
-        ></div>
+        {/* Background card */}
+        <div className="absolute inset-0 bg-white rounded-2xl shadow-lg border border-gray-200"></div>
+        
+        {/* Content */}
+        <div className="relative p-8">
+          {/* Timeline line */}
+          <div className="absolute top-16 left-16 right-16 h-1 bg-gray-200 rounded-full"></div>
+          <div 
+            className="absolute top-16 left-16 h-1 bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all duration-700 ease-out"
+            style={{ width: `calc(${(currentIndex / (elections.length - 1)) * 100}% - 4rem)` }}
+          ></div>
 
-        {/* Timeline events */}
-        <div className="relative flex justify-between">
-          {elections.map((election, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <button
-                onClick={() => handleElectionClick(election, index)}
-                className={`relative z-10 w-6 h-6 rounded-full border-2 transition-all duration-300 ${
-                  index === currentIndex
-                    ? 'bg-green-600 border-green-600'
-                    : index < currentIndex
-                    ? 'bg-green-600 border-green-600'
-                    : 'bg-white border-gray-300 hover:border-green-600'
-                }`}
-              >
-                <div className="absolute inset-0 rounded-full bg-green-600 scale-0 transition-transform duration-300 group-hover:scale-100"></div>
-              </button>
-              <span className="mt-2 text-sm font-medium text-gray-700 text-center">
-                {election.parliamentNumber}th Parliament
-              </span>
-              <span className="text-xs text-gray-500 mt-1">
-                {formatDate(election.electionDate)}
-              </span>
-            </div>
-          ))}
-        </div>
+          {/* Timeline events */}
+          <div className="relative flex justify-between px-4">
+            {elections.map((election, index) => (
+              <div key={index} className="flex flex-col items-center group flex-shrink-0">
+                <button
+                  onClick={() => handleElectionClick(election, index)}
+                  className={`relative z-10 w-8 h-8 rounded-full border-3 transition-all duration-300 transform hover:scale-110 ${
+                    index === currentIndex
+                      ? 'bg-gradient-to-br from-green-500 to-green-600 border-green-600 shadow-lg shadow-green-500/30'
+                      : index < currentIndex
+                      ? 'bg-gradient-to-br from-green-400 to-green-500 border-green-500 shadow-md shadow-green-400/20'
+                      : 'bg-white border-gray-300 hover:border-green-400 hover:shadow-md'
+                  }`}
+                >
+                  {/* Inner dot */}
+                  <div className={`absolute inset-1 rounded-full transition-all duration-300 ${
+                    index === currentIndex || index < currentIndex
+                      ? 'bg-white'
+                      : 'bg-gray-300 group-hover:bg-green-200'
+                  }`}></div>
+                  
+                  {/* Pulse animation for current */}
+                  {index === currentIndex && (
+                    <div className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-20"></div>
+                  )}
+                </button>
+                
+                <div className="mt-4 text-center space-y-1 max-w-20">
+                  <div className={`text-xs font-semibold transition-colors duration-200 leading-tight ${
+                    index === currentIndex 
+                      ? 'text-green-700' 
+                      : 'text-gray-600 group-hover:text-gray-800'
+                  }`}>
+                    {election.parliamentNumber}th
+                  </div>
+                  <div className={`text-xs transition-colors duration-200 leading-tight ${
+                    index === currentIndex 
+                      ? 'text-green-600 font-medium' 
+                      : 'text-gray-500 group-hover:text-gray-600'
+                  }`}>
+                    {formatDate(election.electionDate)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
-        {/* Navigation arrows */}
-        <div className="flex justify-between mt-8">
-          <button
-            onClick={handlePrev}
-            disabled={currentIndex === 0}
-            className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
-              currentIndex === 0
-                ? 'border-gray-300 text-gray-300 cursor-not-allowed'
-                : 'border-gray-400 text-gray-600 hover:border-green-600 hover:text-green-600'
-            }`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          
-          <button
-            onClick={handleNext}
-            disabled={currentIndex === elections.length - 1}
-            className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
-              currentIndex === elections.length - 1
-                ? 'border-gray-300 text-gray-300 cursor-not-allowed'
-                : 'border-gray-400 text-gray-600 hover:border-green-600 hover:text-green-600'
-            }`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          {/* Navigation arrows */}
+          <div className="flex justify-between mt-12">
+            <button
+              onClick={handlePrev}
+              disabled={currentIndex === 0}
+              className={`w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300 transform hover:scale-105 ${
+                currentIndex === 0
+                  ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50'
+                  : 'border-gray-300 text-gray-600 hover:border-green-500 hover:text-green-600 hover:bg-green-50 hover:shadow-md'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <button
+              onClick={handleNext}
+              disabled={currentIndex === elections.length - 1}
+              className={`w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300 transform hover:scale-105 ${
+                currentIndex === elections.length - 1
+                  ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50'
+                  : 'border-gray-300 text-gray-600 hover:border-green-500 hover:text-green-600 hover:bg-green-50 hover:shadow-md'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
