@@ -22,12 +22,6 @@ export default function URLPreview({ url, type, children }: URLPreviewProps) {
   const [preview, setPreview] = useState<PreviewData>({ loading: true });
   const [showPreview, setShowPreview] = useState(false);
 
-  useEffect(() => {
-    if (showPreview && !preview.title && !preview.error) {
-      fetchPreviewData();
-    }
-  }, [showPreview, url, preview.title, preview.error]);
-
   const fetchPreviewData = async () => {
     try {
       setPreview(prev => ({ ...prev, loading: true, error: undefined }));
@@ -74,6 +68,13 @@ export default function URLPreview({ url, type, children }: URLPreviewProps) {
       });
     }
   };
+
+  useEffect(() => {
+    if (showPreview && !preview.title && !preview.error) {
+      fetchPreviewData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showPreview, url, preview.title, preview.error]);
 
   const extractYouTubeVideoId = (url: string): string | null => {
     const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;

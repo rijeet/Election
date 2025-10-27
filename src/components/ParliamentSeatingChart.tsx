@@ -6,12 +6,6 @@ interface ConstituencyData {
   party: string;
 }
 
-interface PartyInfo {
-  name: string;
-  color: string;
-  seats: number;
-}
-
 interface ParliamentData {
   electionYear: string;
   constituencies: Record<number, ConstituencyData>;
@@ -421,7 +415,7 @@ export default function ParliamentSeatingChart({ electionYear }: ParliamentSeati
     const groupedSeats: Array<{cx: number, cy: number, r: number, constituency: number, party: string, color: string}> = [];
     let currentIndex = 0;
     
-    sortedParties.forEach(([party, seats]) => {
+    sortedParties.forEach(([, seats]) => {
       seats.forEach(seat => {
         // Use the original circle position but assign new constituency number for grouping
         const originalCircle = PARLIAMENT_CIRCLES[currentIndex % PARLIAMENT_CIRCLES.length];

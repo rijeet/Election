@@ -21,7 +21,6 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
     return num.toLocaleString();
   };
 
-  const totalVotes = election.candidates.reduce((sum, candidate) => sum + candidate.votes, 0);
   const validVotes = election.voterStats.validVotes;
   const invalidVotes = election.voterStats.invalidVotes;
 

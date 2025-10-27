@@ -1,6 +1,18 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Parliament from '@/models/Parliament';
+
+interface SwingStateResult {
+  constituencyId: string;
+  winners: Array<{
+    parliamentNumber: number;
+    party: string;
+  }>;
+}
+
+interface Winner {
+  parliamentNumber: number;
+  party: string;
+}
 
 interface PartyRecord {
   party: string;
@@ -23,6 +35,11 @@ export async function GET() {
     
     // Use aggregation to group by constituency and count winners
     const db = await import('mongoose').then(m => m.default.connection.db);
+    
+    if (!db) {
+      throw new Error('Database connection not available');
+    }
+    
     const swingStates = await db.collection('swing_state').aggregate([
       {
         $match: {
@@ -53,7 +70,7 @@ export async function GET() {
     // Map to calculate party counts per constituency
     const constituencyMap = new Map<string, ConstituencyRecord>();
     
-    swingStates.forEach((swingState: { constituencyId: string; winners: Array<{ parliamentNumber: number; party: string }> }) => {
+    (swingStates as unknown as SwingStateResult[]).forEach((swingState: SwingStateResult) => {
       const key = swingState.constituencyId;
       
       if (!constituencyMap.has(key)) {
@@ -67,7 +84,7 @@ export async function GET() {
       const record = constituencyMap.get(key)!;
       
       // Count wins by party
-      swingState.winners.forEach((winner: { parliamentNumber: number; party: string }) => {
+      swingState.winners.forEach((winner: Winner) => {
         const partyName = winner.party;
         
         if (!record.winners[partyName]) {
