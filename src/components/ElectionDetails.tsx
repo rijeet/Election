@@ -9,20 +9,23 @@ interface ElectionDetailsProps {
 }
 
 export default function ElectionDetails({ election }: ElectionDetailsProps) {
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
+  const formatDate = (date?: Date | string) => {
+    if (!date) return '—';
+    const parsed = new Date(date);
+    if (isNaN(parsed.getTime())) return '—';
+    return parsed.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
   };
 
-  const formatNumber = (num: number) => {
-    return num.toLocaleString();
+  const formatNumber = (num?: number) => {
+    return typeof num === 'number' && Number.isFinite(num) ? num.toLocaleString() : '—';
   };
 
-  const validVotes = election.voterStats.validVotes;
-  const invalidVotes = election.voterStats.invalidVotes;
+  const validVotes = election?.voterStats?.validVotes ?? 0;
+  const invalidVotes = election?.voterStats?.invalidVotes ?? 0;
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
@@ -55,7 +58,9 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {election.candidates.map((candidate, index) => {
-              const percentage = ((candidate.votes / validVotes) * 100).toFixed(2);
+              const safeValidVotes = validVotes > 0 ? validVotes : 0;
+              const rawPct = safeValidVotes > 0 ? (candidate.votes / safeValidVotes) * 100 : 0;
+              const percentage = rawPct.toFixed(2);
               
               return (
                 <div
@@ -129,7 +134,7 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
           <div className="grid grid-cols-3 gap-6 mb-6">
             <div className="text-center">
               <div className="text-3xl font-bold text-blue-600 mb-2">
-                {formatNumber(election.voterStats.totalVoters)}
+                {formatNumber(election?.voterStats?.totalVoters)}
               </div>
               <div className="text-sm text-gray-600">Registered</div>
             </div>
@@ -143,7 +148,12 @@ export default function ElectionDetails({ election }: ElectionDetailsProps) {
             
             <div className="text-center">
               <div className="text-3xl font-bold text-green-600 mb-2">
-                {(((validVotes + invalidVotes) / election.voterStats.totalVoters) * 100).toFixed(2)}%
+                {(() => {
+                  const totalVoters = election?.voterStats?.totalVoters ?? 0;
+                  if (!totalVoters || totalVoters <= 0) return '0.00%';
+                  const pct = ((validVotes + invalidVotes) / totalVoters) * 100;
+                  return `${pct.toFixed(2)}%`;
+                })()}
               </div>
               <div className="text-sm text-gray-600">Turnout</div>
             </div>
