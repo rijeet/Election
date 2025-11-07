@@ -4,23 +4,37 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import URLPreview from './URLPreview';
 
+interface FamilyMember {
+  name: string;
+  occupation?: string;
+  nationality?: string;
+  img_url?: string;
+}
+
 interface IInfoCandidate {
   _id: string;
   id: string;
   constituency: string;
+  division?: string;
+  district?: string;
   party: string;
   candidate_name: string;
-  gender: string;
+  gender?: string;
   personal_info: {
-    occupation_category: string;
-    profession_details: string;
-    education_category: string;
-    education_details: string;
+    occupation_category?: string;
+    profession_details?: string;
+    education_category?: string;
+    education_details?: string;
   };
-  controversial: Array<{
+  controversial?: Array<{
     NEWS: string;
     youtubes: string[];
   }>;
+  family?: {
+    spouse?: FamilyMember;
+    sons?: FamilyMember[];
+    daughters?: FamilyMember[];
+  };
   media: {
     img_url: string;
   };
@@ -107,6 +121,7 @@ export default function CandidateProfile({ candidateId, onBack }: CandidateProfi
 
   const tabs = [
     { id: 'affidavit', name: 'হলফনামা', icon: '📄' },
+    { id: 'family', name: 'পরিবার', icon: '👨‍👩‍👧‍👦' },
     { id: 'income', name: 'আয়কর', icon: '💰' },
     { id: 'assets', name: 'সম্পদ, দায়', icon: '🏠' },
     { id: 'expenses', name: 'ব্যায়বিবরণী', icon: '📊' },
@@ -114,144 +129,220 @@ export default function CandidateProfile({ candidateId, onBack }: CandidateProfi
   ];
 
   const renderAffidavitContent = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-red-100 p-4 rounded-lg">
-          <h3 className="font-bold text-red-800 mb-2">শিক্ষা</h3>
-          <p className="text-sm text-gray-900 font-medium">{candidate.personal_info.education_category}</p>
-          <p className="text-xs text-gray-700 mt-1">{candidate.personal_info.education_details}</p>
-        </div>
-        
-        <div className="bg-green-100 p-4 rounded-lg">
-          <h3 className="font-bold text-green-800 mb-2">পেশা/জীবিকা</h3>
-          <p className="text-sm text-gray-900 font-medium">{candidate.personal_info.occupation_category}</p>
-          <p className="text-xs text-gray-700 mt-1">{candidate.personal_info.profession_details}</p>
-        </div>
-        
-        <div className="bg-purple-100 p-4 rounded-lg">
-          <h3 className="font-bold text-purple-800 mb-2">মামলা</h3>
-          <p className="text-sm text-gray-900 font-medium">Present: 0</p>
-          <p className="text-sm text-gray-900 font-medium">Past: 0</p>
-        </div>
-        
-        <div className="bg-teal-100 p-4 rounded-lg">
-          <h3 className="font-bold text-teal-800 mb-2">আয়</h3>
-          <p className="text-sm text-gray-900 font-medium">Not Available</p>
-        </div>
-        
-        <div className="bg-orange-100 p-4 rounded-lg">
-          <h3 className="font-bold text-orange-800 mb-2">ধনসম্পত্তি</h3>
-          <p className="text-sm text-gray-900 font-medium">Not Available</p>
-        </div>
-        
-        <div className="bg-red-100 p-4 rounded-lg">
-          <h3 className="font-bold text-red-800 mb-2">দায়</h3>
-          <p className="text-sm text-gray-900 font-medium">Not Available</p>
-        </div>
-        
-        <div className="bg-green-100 p-4 rounded-lg">
-          <h3 className="font-bold text-green-800 mb-2">কর</h3>
-          <p className="text-sm text-gray-900 font-medium">Not Available</p>
-        </div>
-        
-        <div className="bg-purple-100 p-4 rounded-lg">
-          <h3 className="font-bold text-purple-800 mb-2">ঋণ</h3>
-          <p className="text-sm text-gray-900 font-medium">Not Available</p>
-        </div>
+    <section aria-labelledby="affidavit-heading" className="space-y-6">
+      <header>
+        <h3 id="affidavit-heading" className="text-2xl font-semibold text-gray-900">ব্যক্তিগত তথ্য</h3>
+        <p className="text-sm text-gray-600">প্রার্থীর শিক্ষাগত ও পেশাগত প্রেক্ষাপটের সারসংক্ষেপ</p>
+      </header>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <article className="rounded-2xl bg-red-100 p-5 shadow-sm">
+          <h4 className="mb-2 font-semibold text-red-800">শিক্ষা</h4>
+          <p className="text-sm font-medium text-gray-900">{candidate.personal_info.education_category || 'তথ্য নেই'}</p>
+          {candidate.personal_info.education_details && (
+            <p className="mt-1 text-xs text-gray-700">{candidate.personal_info.education_details}</p>
+          )}
+        </article>
+
+        <article className="rounded-2xl bg-green-100 p-5 shadow-sm">
+          <h4 className="mb-2 font-semibold text-green-800">পেশা/জীবিকা</h4>
+          <p className="text-sm font-medium text-gray-900">{candidate.personal_info.occupation_category || 'তথ্য নেই'}</p>
+          {candidate.personal_info.profession_details && (
+            <p className="mt-1 text-xs text-gray-700">{candidate.personal_info.profession_details}</p>
+          )}
+        </article>
+
+        <article className="rounded-2xl bg-purple-100 p-5 shadow-sm">
+          <h4 className="mb-2 font-semibold text-purple-800">মামলা</h4>
+          <p className="text-sm font-medium text-gray-900">Present: 0</p>
+          <p className="text-sm font-medium text-gray-900">Past: 0</p>
+        </article>
+
+        <article className="rounded-2xl bg-teal-100 p-5 shadow-sm">
+          <h4 className="mb-2 font-semibold text-teal-800">আয়</h4>
+          <p className="text-sm font-medium text-gray-900">Not Available</p>
+        </article>
+
+        <article className="rounded-2xl bg-orange-100 p-5 shadow-sm">
+          <h4 className="mb-2 font-semibold text-orange-800">ধনসম্পত্তি</h4>
+          <p className="text-sm font-medium text-gray-900">Not Available</p>
+        </article>
+
+        <article className="rounded-2xl bg-red-100 p-5 shadow-sm">
+          <h4 className="mb-2 font-semibold text-red-800">দায়</h4>
+          <p className="text-sm font-medium text-gray-900">Not Available</p>
+        </article>
+
+        <article className="rounded-2xl bg-green-100 p-5 shadow-sm">
+          <h4 className="mb-2 font-semibold text-green-800">কর</h4>
+          <p className="text-sm font-medium text-gray-900">Not Available</p>
+        </article>
+
+        <article className="rounded-2xl bg-purple-100 p-5 shadow-sm">
+          <h4 className="mb-2 font-semibold text-purple-800">ঋণ</h4>
+          <p className="text-sm font-medium text-gray-900">Not Available</p>
+        </article>
       </div>
-    </div>
+    </section>
   );
 
+  const renderFamilyContent = () => {
+    const { family } = candidate;
+    const hasFamilyContent = family && (
+      !!family.spouse || (family.sons && family.sons.length > 0) || (family.daughters && family.daughters.length > 0)
+    );
+
+    if (!hasFamilyContent) {
+      return (
+        <section className="py-12 text-center text-gray-700">
+          <div className="text-6xl mb-4">👨‍👩‍👧‍👦</div>
+          <h3 className="text-xl font-semibold text-gray-900">পরিবার সংক্রান্ত তথ্য পাওয়া যায়নি</h3>
+          <p className="mt-2 text-sm text-gray-600">যথাযথ তথ্য প্রাপ্তি সাপেক্ষে এই বিভাগ হালনাগাদ করা হবে।</p>
+        </section>
+      );
+    }
+
+    const renderFamilyMember = (member: FamilyMember, label?: string) => (
+      <article key={`${label ?? ''}-${member.name}`} className="flex flex-col items-center gap-4 rounded-2xl bg-white p-4 text-center shadow-md transition hover:shadow-lg sm:flex-row sm:text-left">
+        <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-blue-50">
+          {member.img_url ? (
+            <Image
+              src={member.img_url}
+              alt={member.name}
+              width={80}
+              height={80}
+              className="h-20 w-20 rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-3xl">👤</span>
+          )}
+        </div>
+        <div className="space-y-1">
+          <h4 className="text-lg font-semibold text-gray-900">{member.name}</h4>
+          {member.occupation && <p className="text-sm text-gray-700">পেশা: {member.occupation}</p>}
+          {member.nationality && <p className="text-sm text-gray-700">জাতীয়তা: {member.nationality}</p>}
+        </div>
+      </article>
+    );
+
+    return (
+      <section aria-labelledby="family-heading" className="space-y-8">
+        <header>
+          <h3 id="family-heading" className="text-2xl font-semibold text-gray-900">পরিবার</h3>
+          <p className="text-sm text-gray-600">প্রার্থীর নিকটতম পরিবার সদস্যদের তথ্য</p>
+        </header>
+
+        {family?.spouse && (
+          <div className="space-y-3">
+            <h4 className="text-lg font-semibold text-gray-800">সঙ্গী</h4>
+            {renderFamilyMember(family.spouse, 'spouse')}
+          </div>
+        )}
+
+        {family?.sons && family.sons.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="text-lg font-semibold text-gray-800">পুত্র</h4>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {family.sons.map((son, index) => renderFamilyMember(son, `son-${index}`))}
+            </div>
+          </div>
+        )}
+
+        {family?.daughters && family.daughters.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="text-lg font-semibold text-gray-800">কন্যা</h4>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {family.daughters.map((daughter, index) => renderFamilyMember(daughter, `daughter-${index}`))}
+            </div>
+          </div>
+        )}
+      </section>
+    );
+  };
+
   const renderNewsfeedContent = () => (
-    <div className="space-y-8">
-      <h3 className="text-2xl font-bold text-gray-900 mb-6">নিউজ ও মিডিয়া</h3>
-      
+    <section aria-labelledby="news-heading" className="space-y-8">
+      <header>
+        <h3 id="news-heading" className="text-2xl font-semibold text-gray-900">নিউজ ও মিডিয়া</h3>
+        <p className="text-sm text-gray-600">প্রার্থীর সাথে সম্পর্কিত সংবাদ ও ভিডিও</p>
+      </header>
+
       {candidate.controversial && candidate.controversial.length > 0 ? (
         <div className="space-y-6">
           {candidate.controversial.map((item, index) => (
-            <div key={index} className="bg-white border border-gray-200 rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
+            <article
+              key={index}
+              className="rounded-2xl border border-gray-200 bg-white p-6 shadow-md transition hover:shadow-lg"
+            >
               <div className="space-y-4">
                 {item.NEWS && (
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="text-blue-600 text-lg">📰</span>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
+                      <span className="text-lg text-blue-600">📰</span>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 mb-2 text-lg">সংবাদপত্র</h4>
-                      <URLPreview url={item.NEWS} type="news">
-                        <a 
-                          href={item.NEWS} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 underline text-sm break-all bg-blue-50 px-3 py-2 rounded-lg inline-block hover:bg-blue-100 transition-colors"
-                        >
-                          {item.NEWS}
-                        </a>
-                      </URLPreview>
+                    <div className="flex-1 space-y-2">
+                      <h4 className="text-lg font-semibold text-gray-900">সংবাদপত্র</h4>
+                      <URLPreview
+                        url={item.NEWS}
+                        type="news"
+                        displayMode="inline"
+                      />
                     </div>
                   </div>
                 )}
-                
+
                 {item.youtubes && item.youtubes.length > 0 && (
                   <div className="space-y-3">
-                    <h4 className="font-semibold text-gray-900 text-lg">ইউটিউব ভিডিও</h4>
+                    <h4 className="text-lg font-semibold text-gray-900">ইউটিউব ভিডিও</h4>
                     {item.youtubes.map((youtube, yIndex) => (
-                      <div key={yIndex} className="flex items-start space-x-4">
-                        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                          <span className="text-red-600 text-lg">▶️</span>
+                      <div key={yIndex} className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-red-100">
+                          <span className="text-lg text-red-600">▶️</span>
                         </div>
                         <div className="flex-1">
-                          <URLPreview url={youtube} type="youtube">
-                            <a 
-                              href={youtube} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-red-600 hover:text-red-800 underline text-sm break-all bg-red-50 px-3 py-2 rounded-lg inline-block hover:bg-red-100 transition-colors"
-                            >
-                              {youtube}
-                            </a>
-                          </URLPreview>
+                          <URLPreview
+                            url={youtube}
+                            type="youtube"
+                            displayMode="inline"
+                          />
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
-            </div>
+            </article>
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 text-gray-800">
-          <div className="text-6xl mb-6">📰</div>
-          <h3 className="text-xl font-semibold mb-2 text-gray-900">কোন নিউজ বা মিডিয়া লিংক পাওয়া যায়নি</h3>
+        <div className="py-12 text-center text-gray-800">
+          <div className="mb-6 text-6xl">📰</div>
+          <h3 className="text-xl font-semibold text-gray-900">কোন নিউজ বা মিডিয়া লিংক পাওয়া যায়নি</h3>
           <p className="text-gray-700">শীঘ্রই এই বিভাগে নিউজ ও মিডিয়া লিংক যোগ করা হবে</p>
         </div>
       )}
-    </div>
+    </section>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-2 text-white">প্রার্থীদের তথ্য বিশ্লেষণ</h1>
+    <div className="min-h-screen bg-gray-50 font-[SolaimanLipi]">
+      <header className="bg-gradient-to-r from-blue-600 to-blue-800 py-8 text-white">
+        <div className="mx-auto max-w-6xl px-4">
+          <h1 className="mb-2 text-3xl font-bold text-white">প্রার্থীদের তথ্য বিশ্লেষণ</h1>
           <p className="text-blue-100">প্রার্থীর তথ্য তালিকা</p>
         </div>
-      </div>
+      </header>
 
-      {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4">
+      <nav className="border-b border-gray-200 bg-white shadow-sm">
+        <div className="mx-auto max-w-6xl px-4">
           <div className="flex space-x-1 overflow-x-auto">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all duration-200 ${
+                className={`whitespace-nowrap px-5 py-4 text-sm font-medium transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'border-blue-500 text-blue-600 bg-blue-50'
-                    : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
+                    ? 'border-b-2 border-blue-500 bg-blue-50 text-blue-600'
+                    : 'border-b-2 border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800'
                 }`}
               >
                 <span className="mr-2">{tab.icon}</span>
@@ -260,84 +351,74 @@ export default function CandidateProfile({ candidateId, onBack }: CandidateProfi
             ))}
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-          {/* Candidate Header */}
-          <div className="p-8 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-            <div className="flex items-start space-x-8">
-              {/* Candidate Photo */}
-              <div className="flex-shrink-0">
-                <div className="w-36 h-44 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center shadow-md">
+      <main className="mx-auto max-w-6xl px-4 py-8">
+        <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
+          <header className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white p-6 sm:p-8">
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-10">
+              <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
+                <div className="flex h-44 w-36 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 shadow-md">
                   {candidate.media?.img_url ? (
                     <Image
                       src={candidate.media.img_url}
                       alt={candidate.candidate_name}
                       width={144}
                       height={176}
-                      className="rounded-xl object-cover"
+                      className="h-44 w-36 rounded-xl object-cover"
                     />
                   ) : (
-                    <div className="text-gray-500 text-5xl">👤</div>
+                    <span className="text-5xl text-gray-500">👤</span>
                   )}
                 </div>
-                <p className="text-center text-sm font-semibold mt-3 text-gray-800">
-                  {candidate.candidate_name}
-                </p>
+                <div className="space-y-4 text-center md:text-left">
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">{candidate.candidate_name}</h2>
+                    <p className="text-lg font-medium text-gray-700">{candidate.constituency}</p>
+                    <div className="grid grid-cols-1 gap-2 text-sm text-gray-600 sm:grid-cols-2">
+                      {candidate.division && (
+                        <p><span className="font-semibold text-gray-700">বিভাগ:</span> {candidate.division}</p>
+                      )}
+                      {candidate.district && (
+                        <p><span className="font-semibold text-gray-700">জেলা:</span> {candidate.district}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                    <p><span className="inline-block w-20 font-semibold text-gray-800">দল:</span> {candidate.party || 'তথ্য নেই'}</p>
+                    <p><span className="inline-block w-20 font-semibold text-gray-800">লিঙ্গ:</span> {candidate.gender || 'তথ্য নেই'}</p>
+                    <p><span className="inline-block w-20 font-semibold text-gray-800">পেশা:</span> {candidate.personal_info.occupation_category || 'তথ্য নেই'}</p>
+                    <p><span className="inline-block w-20 font-semibold text-gray-800">শিক্ষা:</span> {candidate.personal_info.education_category || 'তথ্য নেই'}</p>
+                  </div>
+                </div>
               </div>
 
-              {/* Candidate Info */}
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-3xl font-bold text-gray-900">
-                    {candidate.candidate_name} | {candidate.constituency}
-                  </h2>
-                  <button
-                    onClick={onBack}
-                    className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-md"
-                  >
-                    তালিকায় ফিরে আসুন
-                  </button>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-base">
-                  <div className="flex items-center">
-                    <span className="font-semibold text-gray-700 w-20">দল:</span>
-                    <span className="text-gray-900 font-medium">{candidate.party}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="font-semibold text-gray-700 w-20">লিঙ্গ:</span>
-                    <span className="text-gray-900 font-medium">{candidate.gender}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="font-semibold text-gray-700 w-20">পেশা:</span>
-                    <span className="text-gray-900 font-medium">{candidate.personal_info.occupation_category}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="font-semibold text-gray-700 w-20">শিক্ষা:</span>
-                    <span className="text-gray-900 font-medium">{candidate.personal_info.education_category}</span>
-                  </div>
-                </div>
+              <div className="flex justify-center md:justify-end">
+                <button
+                  onClick={onBack}
+                  className="rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 font-medium text-white shadow-md transition-all duration-200 hover:from-blue-700 hover:to-blue-800"
+                >
+                  তালিকায় ফিরে আসুন
+                </button>
               </div>
             </div>
-          </div>
+          </header>
 
-          {/* Tab Content */}
-          <div className="p-8 bg-gray-50">
+          <div className="bg-gray-50 p-6 sm:p-8">
             {activeTab === 'affidavit' && renderAffidavitContent()}
+            {activeTab === 'family' && renderFamilyContent()}
             {activeTab === 'newsfeed' && renderNewsfeedContent()}
             {(activeTab === 'income' || activeTab === 'assets' || activeTab === 'expenses') && (
-              <div className="text-center py-12 text-gray-800">
-                <div className="text-6xl mb-6">📊</div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-900">এই বিভাগের তথ্য এখনও উপলব্ধ নয়</h3>
+              <section className="py-12 text-center text-gray-800">
+                <div className="mb-6 text-6xl">📊</div>
+                <h3 className="text-xl font-semibold text-gray-900">এই বিভাগের তথ্য এখনও উপলব্ধ নয়</h3>
                 <p className="text-gray-700">শীঘ্রই এই বিভাগে আরও তথ্য যোগ করা হবে</p>
-              </div>
+              </section>
             )}
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 }
