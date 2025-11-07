@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { use, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -15,9 +15,9 @@ interface CandidateResponse extends CandidateFormValues {
   };
 }
 
-export default function EditCandidatePage({ params }: { params: { id: string } }) {
+export default function EditCandidatePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const candidateId = params.id;
+  const { id: candidateId } = use(params);
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [candidate, setCandidate] = useState<CandidateFormValues | null>(null);
   const [loading, setLoading] = useState(true);
