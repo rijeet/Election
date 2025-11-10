@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { bangladeshMapConstituencies } from '@/data/bangladeshMapData';
+import BlunderAnalysis from './BlunderAnalysis';
 
 interface SwingState {
   constituency_name: string;
@@ -29,6 +30,7 @@ export default function SwingStateMap() {
   const [data, setData] = useState<SwingStateData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedConstituency, setSelectedConstituency] = useState<SwingState | null>(null);
+  const [showBlunder, setShowBlunder] = useState(true);
 
   useEffect(() => {
     async function fetchSwingStates() {
@@ -267,6 +269,8 @@ export default function SwingStateMap() {
           </div>
         </div>
       </div>
+      {/* Blunder Analysis Section */}
+      <div className="mt-8">{showBlunder && <BlunderAnalysis parliamentNumber={9} />}</div>
     </div>
   );
 }
