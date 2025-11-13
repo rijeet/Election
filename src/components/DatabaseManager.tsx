@@ -91,6 +91,48 @@ export default function DatabaseManager() {
     }
   };
 
+  const handleSeedPolls = async () => {
+    setLoading(true);
+    setError('');
+    setMessage('');
+    
+    try {
+      const response = await fetch('/api/poll/seed', { method: 'POST' });
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessage(`✅ Polls seeded successfully! - ${data.inserted?.length || 0} polls added`);
+      } else {
+        setError(`❌ ${data.error}`);
+      }
+    } catch (err) {
+      setError(`❌ Network error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSeedPosts = async () => {
+    setLoading(true);
+    setError('');
+    setMessage('');
+    
+    try {
+      const response = await fetch('/api/posts/seed', { method: 'POST' });
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessage(`✅ Blog posts seeded successfully! - ${data.count || 0} posts added`);
+      } else {
+        setError(`❌ ${data.error}`);
+      }
+    } catch (err) {
+      setError(`❌ Network error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleClearDatabase = async () => {
     if (!confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
       return;
@@ -156,6 +198,22 @@ export default function DatabaseManager() {
           </button>
           
           <button
+            onClick={handleSeedPolls}
+            disabled={loading}
+            className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? '⏳ Seeding...' : '📊 Seed Polls'}
+          </button>
+          
+          <button
+            onClick={handleSeedPosts}
+            disabled={loading}
+            className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? '⏳ Seeding...' : '📝 Seed Blog Posts'}
+          </button>
+          
+          <button
             onClick={handleClearDatabase}
             disabled={loading}
             className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -183,6 +241,8 @@ export default function DatabaseManager() {
             <li><strong>Seed Elections Only:</strong> Adds 12 parliamentary elections</li>
             <li><strong>Seed Constituencies Only:</strong> Adds constituency data for 12th Parliament</li>
             <li><strong>Seed Party Alliances:</strong> Adds party alliance data for all parliaments</li>
+            <li><strong>Seed Polls:</strong> Adds sample polls (July National Charter & Election 2026 Opinion)</li>
+            <li><strong>Seed Blog Posts:</strong> Adds sample blog posts about elections, politics, and analysis</li>
             <li><strong>Clear All Data:</strong> Removes all data from database</li>
           </ul>
         </div>

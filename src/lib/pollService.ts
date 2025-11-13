@@ -1,7 +1,7 @@
 import connectDB from '@/lib/mongodb';
 import Poll from '@/models/Poll';
 import type { PollDTO } from '@/types/poll';
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 import type { IPoll } from '@/models/Poll';
 
 type PollLeanDoc = IPoll & {

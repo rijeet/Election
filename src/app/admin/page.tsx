@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import AdminNewsfeedManager from '@/components/AdminNewsfeedManager';
 import DatabaseManager from '@/components/DatabaseManager';
+import BlogManager from '@/components/admin/BlogManager';
 
 interface DashboardStats {
   elections: {
@@ -34,7 +35,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'newsfeed' | 'elections' | 'database'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'newsfeed' | 'elections' | 'database' | 'blog'>('dashboard');
 
   const fetchDashboardStats = useCallback(async () => {
     try {
@@ -203,6 +204,16 @@ export default function AdminDashboard() {
               👤 Admin Users
             </a>
             <button
+              onClick={() => setActiveTab('blog')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === 'blog'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              📝 Blog Manager
+            </button>
+            <button
               onClick={() => setActiveTab('database')}
               className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === 'database'
@@ -337,6 +348,19 @@ export default function AdminDashboard() {
                 </a>
                 
                 <button
+                  onClick={() => setActiveTab('blog')}
+                  className="p-4 bg-gradient-to-r from-indigo-50 to-indigo-100 border border-indigo-200 rounded-lg hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200 text-left"
+                >
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">📝</span>
+                    <div>
+                      <p className="font-medium text-indigo-800">Manage Blog</p>
+                      <p className="text-sm text-indigo-600">Create and edit blog posts</p>
+                    </div>
+                  </div>
+                </button>
+                
+                <button
                   onClick={() => setActiveTab('database')}
                   className="p-4 bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-lg hover:from-orange-100 hover:to-orange-200 transition-all duration-200 text-left"
                 >
@@ -364,6 +388,10 @@ export default function AdminDashboard() {
           </div>
         )}
 
+
+        {activeTab === 'blog' && (
+          <BlogManager />
+        )}
 
         {activeTab === 'database' && (
           <div className="bg-white/70 backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-lg">

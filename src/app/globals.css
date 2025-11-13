@@ -40,6 +40,21 @@
   --color-foreground: var(--foreground);
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono);
+  
+  /* Brand colors */
+  --color-brand-700: #0f8a5f;
+  --color-brand-600: #16a34a;
+  --color-brand-500: #22c55e;
+  
+  /* Danger colors */
+  --color-danger-600: #dc2626;
+  --color-danger-500: #ef4444;
+  
+  /* Background dark */
+  --color-bgdark: #08303a;
+  
+  /* Muted */
+  --color-muted: #6b7280;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,6 +62,10 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {

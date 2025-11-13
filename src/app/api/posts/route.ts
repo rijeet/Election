@@ -4,6 +4,23 @@ import Post from '@/models/Post';
 import type { PostStatus } from '@/types/post';
 import { slugify } from '@/lib/slugify';
 
+const ensureAdminAuthorized = (request: NextRequest): boolean => {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return false;
+  }
+
+  try {
+    const token = authHeader.replace('Bearer ', '');
+    const decoded = Buffer.from(token, 'base64').toString('utf-8');
+    const [adminId, timestamp] = decoded.split(':');
+    return Boolean(adminId && timestamp);
+  } catch (error) {
+    console.error('Failed to validate admin token:', error);
+    return false;
+  }
+};
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -12,7 +29,12 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
     const query: Record<string, unknown> = {};
-    if (status) {
+    
+    // If no auth header, only return published posts
+    const isAdmin = ensureAdminAuthorized(request);
+    if (!isAdmin) {
+      query.status = 'published';
+    } else if (status) {
       query.status = status;
     }
 
@@ -30,6 +52,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication for POST
+    if (!ensureAdminAuthorized(request)) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const {
       id,

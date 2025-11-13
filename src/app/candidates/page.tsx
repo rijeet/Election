@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Header from '@/components/Header';
 import CandidateList from '@/components/CandidateList';
 import CandidateProfile from '@/components/CandidateProfile';
 
@@ -15,16 +16,17 @@ export default function CandidatesPage() {
     setSelectedCandidateId(null);
   };
 
-  if (selectedCandidateId) {
-    return (
-      <CandidateProfile
-        candidateId={selectedCandidateId}
-        onBack={handleBackToList}
-      />
-    );
-  }
-
   return (
-    <CandidateList onSelectCandidate={handleSelectCandidate} />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <Header />
+      {selectedCandidateId ? (
+        <CandidateProfile
+          candidateId={selectedCandidateId}
+          onBack={handleBackToList}
+        />
+      ) : (
+        <CandidateList onSelectCandidate={handleSelectCandidate} />
+      )}
+    </div>
   );
 }

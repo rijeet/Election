@@ -19,12 +19,12 @@ const SAMPLE_POLLS = [
         },
         tooltip: {
           bn: 'এই প্রশ্নের মাধ্যমে আমরা জানতে চাই নাগরিকরা কতটা সন্তুষ্ট জুলাই চার্টারের প্রতিশ্রুতি বাস্তবায়নে।',
-          en: "This question measures how satisfied citizens are with the July Charter’s promises."
+          en: "This question measures how satisfied citizens are with the July Charter's promises."
         },
         options: [
-          { key: 'yes', label: { bn: 'হ্যাঁ', en: 'Yes' }, votes: 123 },
-          { key: 'no', label: { bn: 'না', en: 'No' }, votes: 98 },
-          { key: 'none', label: { bn: 'নিরপেক্ষ', en: 'Neutral' }, votes: 34 }
+          { key: 'yes', label: { bn: 'হ্যাঁ', en: 'Yes' }, votes: 0 },
+          { key: 'no', label: { bn: 'না', en: 'No' }, votes: 0 },
+          { key: 'none', label: { bn: 'নিরপেক্ষ', en: 'None' }, votes: 0 }
         ]
       }
     ]
@@ -44,12 +44,11 @@ const SAMPLE_POLLS = [
         },
         tooltip: {
           bn: 'নির্বাচন কমিশনের স্বচ্ছতা নিয়ে নাগরিকদের ধারণা জানার চেষ্টা।',
-          en: 'Measures citizens’ perception of the EC’s neutrality.'
+          en: "Measures citizens' perception of the EC's neutrality."
         },
         options: [
-          { key: 'yes', label: { bn: 'হ্যাঁ', en: 'Yes' }, votes: 54 },
-          { key: 'no', label: { bn: 'না', en: 'No' }, votes: 72 },
-          { key: 'none', label: { bn: 'নিরপেক্ষ', en: 'Not sure' }, votes: 19 }
+          { key: 'yes', label: { bn: 'হ্যাঁ', en: 'Yes' }, votes: 0 },
+          { key: 'no', label: { bn: 'না', en: 'No' }, votes: 0 }
         ]
       },
       {
@@ -62,9 +61,9 @@ const SAMPLE_POLLS = [
           en: 'Checks opinion on foreign oversight.'
         },
         options: [
-          { key: 'yes', label: { bn: 'হ্যাঁ', en: 'Yes' }, votes: 88 },
-          { key: 'no', label: { bn: 'না', en: 'No' }, votes: 31 },
-          { key: 'none', label: { bn: 'নিরপেক্ষ', en: 'Neutral' }, votes: 22 }
+          { key: 'yes', label: { bn: 'হ্যাঁ', en: 'Yes' }, votes: 0 },
+          { key: 'no', label: { bn: 'না', en: 'No' }, votes: 0 },
+          { key: 'none', label: { bn: 'নিরপেক্ষ', en: 'None' }, votes: 0 }
         ]
       }
     ]

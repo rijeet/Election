@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { getPostBySlug, getPublishedPosts } from '@/lib/blogService';
-import type { PostDTO } from '@/types/post';
 import Link from 'next/link';
 
 interface PageProps {
@@ -42,7 +41,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     keywords: post.tags,
     other: {
-      'article:published_time': post.publishedAt
+      ...(post.publishedAt && { 'article:published_time': post.publishedAt })
     }
   };
 }

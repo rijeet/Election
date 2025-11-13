@@ -3,7 +3,10 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    <header className="relative bg-gradient-to-r from-green-700 via-green-800 to-green-900 text-white shadow-xl">
+    <header 
+      className="relative bg-gradient-to-r from-green-700 via-green-800 to-green-900 text-white shadow-xl"
+      suppressHydrationWarning
+    >
       {/* Subtle overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-r from-green-800/20 to-green-900/20"></div>
       
@@ -29,19 +32,12 @@ export default function Header() {
             </div>
           </Link>
           
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6">
             <Link 
               href="/" 
               className="relative px-3 py-2 text-sm font-medium text-white hover:text-green-200 transition-colors duration-200 group"
             >
               <span className="relative z-10">হোম</span>
-              <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-            </Link>
-            <Link 
-              href="/candidates" 
-              className="relative px-3 py-2 text-sm font-medium text-white hover:text-green-200 transition-colors duration-200 group"
-            >
-              <span className="relative z-10">প্রার্থী</span>
               <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
             </Link>
             <Link 
@@ -52,10 +48,31 @@ export default function Header() {
               <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
             </Link>
             <Link 
-              href="/constituencies" 
+              href="/candidates" 
               className="relative px-3 py-2 text-sm font-medium text-white hover:text-green-200 transition-colors duration-200 group"
             >
-              <span className="relative z-10">নির্বাচনী এলাকা</span>
+              <span className="relative z-10">প্রার্থী</span>
+              <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </Link>
+            <Link 
+              href="/analysis" 
+              className="relative px-3 py-2 text-sm font-medium text-white hover:text-green-200 transition-colors duration-200 group"
+            >
+              <span className="relative z-10">বিশ্লেষণ</span>
+              <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </Link>
+            <Link 
+              href="/polls" 
+              className="relative px-3 py-2 text-sm font-medium text-white hover:text-green-200 transition-colors duration-200 group"
+            >
+              <span className="relative z-10">পোল</span>
+              <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </Link>
+            <Link 
+              href="/#blog" 
+              className="relative px-3 py-2 text-sm font-medium text-white hover:text-green-200 transition-colors duration-200 group"
+            >
+              <span className="relative z-10">ব্লগ</span>
               <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
             </Link>
             <Link 
@@ -64,16 +81,6 @@ export default function Header() {
             >
               <span className="relative z-10">যোগাযোগ</span>
               <div className="absolute inset-0 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-            </Link>
-            
-            <div className="h-6 w-px bg-green-300/30"></div>
-            
-            <Link 
-              href="/admin/login" 
-              className="relative px-4 py-2 text-sm font-semibold text-green-100 bg-green-700/30 hover:bg-green-600/40 rounded-lg border border-green-500/30 hover:border-green-400/50 transition-all duration-200 group"
-            >
-              <span className="relative z-10">Admin Panel</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-green-600/20 to-green-500/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
             </Link>
           </nav>
 

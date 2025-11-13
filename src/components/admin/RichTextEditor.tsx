@@ -175,7 +175,7 @@ export default function RichTextEditor({ value, onChange, placeholder, className
               : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
           }`}
         >
-          "
+          &quot;
         </button>
         <div className="w-px h-6 bg-gray-300" />
         <button

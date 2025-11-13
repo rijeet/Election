@@ -102,28 +102,27 @@ export default function PollClient({ poll }: PollClientProps) {
   }, [language, optimisticPoll.updatedAt]);
 
   return (
-    <div className="space-y-8">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-200">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{optimisticPoll.title[language]}</h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-muted mb-1">
             {language === 'bn' ? 'সর্বশেষ আপডেট' : 'Last Updated'}: {lastUpdatedText}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Globe className="h-5 w-5 text-gray-500" />
+          <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-muted" />
           <button
             type="button"
             onClick={() => setLanguage(language === 'bn' ? 'en' : 'bn')}
-            className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:border-green-400 hover:text-green-600"
+            className="rounded-full border border-gray-300 bg-white px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 shadow-sm hover:border-brand-500 hover:text-brand-600 transition-colors"
           >
             {language === 'bn' ? 'English' : 'বাংলা'}
           </button>
         </div>
-      </header>
+      </div>
 
       {ready && errorMessage && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <div className="rounded-xl border-2 border-danger-500/30 bg-danger-50 px-4 py-3 text-sm sm:text-base text-danger-600">
           {errorMessage}
         </div>
       )}
@@ -140,7 +139,7 @@ export default function PollClient({ poll }: PollClientProps) {
               onVote={(optionKey) => handleVote(index, optionKey)}
             />
             {thankYou === index && (
-              <p className="mt-2 text-sm font-medium text-green-600">
+              <p className="mt-2 text-sm sm:text-base font-medium text-brand-600">
                 {language === 'bn' ? 'ধন্যবাদ! আপনার ভোট মূল্যবান।' : 'Thank you! Your vote matters.'}
               </p>
             )}
@@ -148,20 +147,23 @@ export default function PollClient({ poll }: PollClientProps) {
         ))}
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900">
+      <div className="rounded-2xl border-2 border-gray-200 bg-white p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
           {language === 'bn' ? 'আরও জনমত জরিপ' : 'Explore more polls'}
         </h2>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm sm:text-base text-muted mb-4">
           {language === 'bn'
             ? 'শীঘ্রই এখানে আরও জনমত জরিপ যোগ করা হবে।'
             : 'More public opinion polls will be added here soon.'}
         </p>
         <Link
           href="/polls"
-          className="mt-3 inline-flex items-center text-sm font-medium text-green-600 hover:text-green-800"
+          className="inline-flex items-center text-sm sm:text-base font-medium text-brand-600 hover:text-brand-700 transition-colors group"
         >
-          {language === 'bn' ? 'সমস্ত জরিপ দেখুন →' : 'See all polls →'}
+          <span>{language === 'bn' ? 'সমস্ত জরিপ দেখুন' : 'See all polls'}</span>
+          <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
         </Link>
       </div>
 
