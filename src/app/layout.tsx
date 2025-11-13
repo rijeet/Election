@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -13,6 +13,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const notoBengali = Noto_Sans_Bengali({
+  variable: "--font-bengali",
+  subsets: ["bengali"],
+  display: "swap",
+});
 export const metadata: Metadata = {
   title: "Bangladesh Election Insights",
   description: "Explore comprehensive election data, parliamentary history, constituency details, and interactive visualizations of Bangladesh's democratic journey from 1973 to 2024.",
@@ -44,7 +49,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoBengali.variable} font-sans antialiased`}
       >
         {children}
       </body>

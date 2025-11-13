@@ -38,7 +38,7 @@ export function useBlunderAnalysis(parliamentNumber: number) {
           setData(json);
           setError(null);
         }
-      } catch (err) {
+      } catch {
         if (active) setError('Failed to fetch blunder analysis');
       } finally {
         if (active) setLoading(false);

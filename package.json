@@ -10,11 +10,13 @@
     "seed": "curl -X POST http://localhost:3000/api/seed"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^4.5.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/mongodb": "^4.0.6",
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.3",
     "link-preview-js": "^3.1.0",
+    "lucide-react": "^0.453.0",
     "mongodb": "^6.20.0",
     "mongoose": "^8.19.0",
     "next": "15.5.4",
@@ -22,6 +24,11 @@
     "react-dom": "19.1.0",
     "react-hook-form": "^7.66.0",
     "react-hot-toast": "^2.6.0",
+    "@tiptap/react": "^2.7.4",
+    "@tiptap/starter-kit": "^2.7.4",
+    "@tiptap/extension-link": "^2.7.4",
+    "@tiptap/extension-image": "^2.7.4",
+    "@tiptap/extension-underline": "^2.7.4",
     "resend": "^6.3.0"
   },
   "devDependencies": {
