@@ -15,6 +15,9 @@ module.exports = {
         },
         bgdark: '#08303a',
         muted: '#6b7280',
+        // Election 2026 Theme Colors
+        'election-green': '#1FA757',
+        'election-red': '#D62828',
       },
     },
   },
