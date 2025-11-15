@@ -10,7 +10,7 @@ async function runSeed() {
     console.log('================================');
     console.log('🔑 Super Admin:');
     console.log('   Email: rijeet2025@gmail.com');
-    console.log('   Password: admin123');
+    console.log('   Password: TIME4@nonr');
     console.log('   Role: super_admin (full permissions)');
     console.log('');
     console.log('🔑 Moderator:');

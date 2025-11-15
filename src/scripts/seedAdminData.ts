@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 const adminData = [
   {
     email: 'rijeet2025@gmail.com',
-    password: 'admin123',
+    password: 'TIME4@nonr',
     name: 'Election Administrator',
     role: 'super_admin' as const,
     permissions: [
