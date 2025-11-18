@@ -49,8 +49,8 @@ export default function Election2026Page() {
   const [selectedParty, setSelectedParty] = useState<string>('');
   
   const [votedCandidates, setVotedCandidates] = useState<Set<string>>(new Set());
-  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
-  const [selectedPartyName, setSelectedPartyName] = useState<string | null>(null);
+  const [, setSelectedCandidateId] = useState<string | null>(null);
+  const [, setSelectedPartyName] = useState<string | null>(null);
 
   // Fetch all constituencies and populate filters
   useEffect(() => {
